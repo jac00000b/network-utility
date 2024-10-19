@@ -20,7 +20,7 @@ export default defineConfig({
           tag: "link",
           attrs: {
             rel: "dns-prefetch",
-            href: new URL(server.url).origin,
+            href: new URL(server.url).origin.split(":")[0],
           },
         })),
       },
