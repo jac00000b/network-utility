@@ -39,6 +39,7 @@ export default tseslint.config(
       ],
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
+      "@eslint-react/no-unsafe-assignment": "off",
     },
   }
 );
