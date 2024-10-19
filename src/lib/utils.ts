@@ -35,4 +35,12 @@ export const dohServers = [
   //   name: "NextDNS",
   //   url: "https://dns.nextdns.io/dns-query",
   // },
+  {
+    name: "DNS.SB",
+    url: "https://doh.dns.sb/dns-query",
+  },
+  {
+    name: "AliDNS",
+    url: "https://dns.alidns.com/resolve",
+  },
 ];
