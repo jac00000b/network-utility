@@ -50,7 +50,7 @@ export const Route = createLazyFileRoute("/dns/$type")({
 const formSchema = z.object({
   domain: z
     .string()
-    .regex(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/, {
+    .regex(/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/, {
       message: "Please enter a valid domain name",
     }),
 });
@@ -163,7 +163,7 @@ function DnsTypePage() {
                     <CardHeader className="p-4 pb-0">
                       <CardTitle>{server.name}</CardTitle>
                     </CardHeader>
-                    <CardContent className="p-4 pt-2">
+                    <CardContent className="p-4 pt-2 flex-col flex items-start">
                       <TooltipProvider>
                         {(
                           server.response.Answer ?? server.response.Authority
