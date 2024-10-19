@@ -17,6 +17,8 @@ import { Route as rootRoute } from './routes/__root'
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
+const DnsIndexLazyImport = createFileRoute('/dns/')()
+const DnsTypeLazyImport = createFileRoute('/dns/$type')()
 
 // Create/Update Routes
 
@@ -25,6 +27,18 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const DnsIndexLazyRoute = DnsIndexLazyImport.update({
+  id: '/dns/',
+  path: '/dns/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/dns/index.lazy').then((d) => d.Route))
+
+const DnsTypeLazyRoute = DnsTypeLazyImport.update({
+  id: '/dns/$type',
+  path: '/dns/$type',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/dns/$type.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
@@ -37,6 +51,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/dns/$type': {
+      id: '/dns/$type'
+      path: '/dns/$type'
+      fullPath: '/dns/$type'
+      preLoaderRoute: typeof DnsTypeLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/dns/': {
+      id: '/dns/'
+      path: '/dns'
+      fullPath: '/dns'
+      preLoaderRoute: typeof DnsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -44,32 +72,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/dns/$type': typeof DnsTypeLazyRoute
+  '/dns': typeof DnsIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/dns/$type': typeof DnsTypeLazyRoute
+  '/dns': typeof DnsIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/dns/$type': typeof DnsTypeLazyRoute
+  '/dns/': typeof DnsIndexLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/dns/$type' | '/dns'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/dns/$type' | '/dns'
+  id: '__root__' | '/' | '/dns/$type' | '/dns/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  DnsTypeLazyRoute: typeof DnsTypeLazyRoute
+  DnsIndexLazyRoute: typeof DnsIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  DnsTypeLazyRoute: DnsTypeLazyRoute,
+  DnsIndexLazyRoute: DnsIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -84,11 +122,19 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/dns/$type",
+        "/dns/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/dns/$type": {
+      "filePath": "dns/$type.lazy.tsx"
+    },
+    "/dns/": {
+      "filePath": "dns/index.lazy.tsx"
     }
   }
 }
