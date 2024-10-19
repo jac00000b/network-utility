@@ -18,7 +18,7 @@ const data = {
   navMain: [
     {
       title: "DNS",
-      url: "#",
+      url: "/dns",
       icon: EthernetPort,
       isActive: true,
       items: dnsTypes.map((type) => ({

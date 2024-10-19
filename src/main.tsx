@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 
 import { routeTree } from "./routeTree.gen";
+import { ThemeProvider } from "./components/theme-provider";
 
 const hashHistory = createHashHistory();
 
@@ -28,9 +29,11 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <ThemeProvider defaultTheme="dark">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ThemeProvider>
     </StrictMode>
   );
 }
