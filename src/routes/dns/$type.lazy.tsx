@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createLazyFileRoute("/dns/$type")({
   component: DnsTypePage,
@@ -49,9 +50,17 @@ function DnsTypePage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["dnsData", type, form.getValues("domain")],
+    queryFn: async () => {
+      return {
+        data: "test",
+      };
+    },
+    enabled: false,
+  });
+
+  console.log(data, isLoading, isError);
 
   if (
     !dnsTypes.includes(
@@ -88,7 +97,7 @@ function DnsTypePage() {
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(() => refetch())}
               className="flex gap-4 items-end"
             >
               <FormField
