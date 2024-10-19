@@ -19,8 +19,8 @@ export default defineConfig({
           injectTo: "head",
           tag: "link",
           attrs: {
-            rel: "dns-prefetch",
-            href: new URL(server.url).origin.split(":")[0],
+            rel: "preconnect",
+            href: new URL(server.url).origin,
           },
         })),
       },
