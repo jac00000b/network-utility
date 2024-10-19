@@ -172,24 +172,24 @@ function DnsTypePage() {
                     </CardHeader>
                     <CardContent className="p-4 pt-2 flex-col flex items-start">
                       <TooltipProvider>
-                        {(
-                          server.response.Answer ?? server.response.Authority
-                        ).map((item: any) => (
-                          <Tooltip key={item.data}>
-                            <TooltipTrigger>
-                              <CardDescription key={item.data}>
-                                {item.data}
-                              </CardDescription>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              TTL: {item.TTL} (
-                              {new Date(
-                                Date.now() + item.TTL * 1000
-                              ).toLocaleString()}
-                              )
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
+                        {(server.response.Answer ?? server.response.Authority)
+                          .filter((item: any) => item.type !== 46)
+                          .map((item: any) => (
+                            <Tooltip key={item.data}>
+                              <TooltipTrigger>
+                                <CardDescription key={item.data}>
+                                  {item.data}
+                                </CardDescription>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                TTL: {item.TTL} (
+                                {new Date(
+                                  Date.now() + item.TTL * 1000
+                                ).toLocaleString()}
+                                )
+                              </TooltipContent>
+                            </Tooltip>
+                          ))}
                       </TooltipProvider>
                     </CardContent>
                   </Card>

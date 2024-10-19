@@ -26,4 +26,8 @@ export const dohServers = [
     name: "Cloudflare",
     url: "https://cloudflare-dns.com/dns-query",
   },
+  {
+    name: "Quad9",
+    url: "https://dns.quad9.net:5053/dns-query",
+  },
 ];
