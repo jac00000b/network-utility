@@ -16,3 +16,14 @@ export const dnsTypes = [
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const dohServers = [
+  {
+    name: "Google",
+    url: "https://dns.google/resolve",
+  },
+  {
+    name: "Cloudflare",
+    url: "https://cloudflare-dns.com/dns-query",
+  },
+];

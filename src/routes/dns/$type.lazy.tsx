@@ -12,7 +12,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { dnsTypes } from "@/lib/utils";
+import { dnsTypes, dohServers } from "@/lib/utils";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
+import { ofetch } from "ofetch";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const Route = createLazyFileRoute("/dns/$type")({
   component: DnsTypePage,
@@ -53,9 +67,23 @@ function DnsTypePage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["dnsData", type, form.getValues("domain")],
     queryFn: async () => {
-      return {
-        data: "test",
-      };
+      const result = await Promise.all(
+        dohServers.map(async (server) => ({
+          ...server,
+          response: await ofetch(server.url, {
+            headers: {
+              accept: "application/dns-json",
+            },
+            query: {
+              name: form.getValues("domain"),
+              type: type.toUpperCase(),
+            },
+            responseType: "json",
+            cache: "no-cache",
+          }),
+        }))
+      );
+      return result;
     },
     enabled: false,
   });
@@ -116,6 +144,50 @@ function DnsTypePage() {
               <Button type="submit">Submit</Button>
             </form>
           </Form>
+          <div className="flex flex-col gap-2">
+            {!data
+              ? dohServers.map((server) => (
+                  <Card key={server.name} className="rounded-md shadow-none">
+                    <CardHeader className="p-4 pb-0">
+                      <CardTitle>{server.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-2">
+                      <CardDescription>
+                        {isLoading ? "Loading..." : "No data"}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                ))
+              : data.map((server) => (
+                  <Card key={server.name} className="rounded-md shadow-none">
+                    <CardHeader className="p-4 pb-0">
+                      <CardTitle>{server.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-2">
+                      <TooltipProvider>
+                        {(
+                          server.response.Answer ?? server.response.Authority
+                        ).map((item: any) => (
+                          <Tooltip key={item.data}>
+                            <TooltipTrigger>
+                              <CardDescription key={item.data}>
+                                {item.data}
+                              </CardDescription>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              TTL: {item.TTL} (
+                              {new Date(
+                                Date.now() + item.TTL * 1000
+                              ).toLocaleString()}
+                              )
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </TooltipProvider>
+                    </CardContent>
+                  </Card>
+                ))}
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
