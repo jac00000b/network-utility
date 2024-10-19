@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { FormField } from "@/components/ui/form";
+import { FormDescription, FormField } from "@/components/ui/form";
 import {
   Form,
   FormControl,
@@ -42,6 +42,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Loader2 } from "lucide-react";
 
 export const Route = createLazyFileRoute("/dns/$type")({
   component: DnsTypePage,
@@ -64,7 +65,7 @@ function DnsTypePage() {
     },
   });
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isFetching, refetch } = useQuery({
     queryKey: ["dnsData", type, form.getValues("domain")],
     queryFn: async () => {
       const result = await Promise.all(
@@ -87,8 +88,6 @@ function DnsTypePage() {
     },
     enabled: false,
   });
-
-  console.log(data, isLoading, isError);
 
   if (
     !dnsTypes.includes(
@@ -126,7 +125,7 @@ function DnsTypePage() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(() => refetch())}
-              className="flex gap-4 items-end"
+              className="flex gap-4 items-center"
             >
               <FormField
                 control={form.control}
@@ -137,11 +136,19 @@ function DnsTypePage() {
                     <FormControl>
                       <Input placeholder="example.com" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Enter a domain name to lookup.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isFetching}>
+                {isFetching && (
+                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                )}
+                {isFetching ? "Loading" : "Submit"}
+              </Button>
             </form>
           </Form>
           <div className="flex flex-col gap-2">
@@ -153,7 +160,7 @@ function DnsTypePage() {
                     </CardHeader>
                     <CardContent className="p-4 pt-2">
                       <CardDescription>
-                        {isLoading ? "Loading..." : "No data"}
+                        {isFetching ? "Loading..." : "No data"}
                       </CardDescription>
                     </CardContent>
                   </Card>
