@@ -30,7 +30,7 @@ const data = {
   navSecondary: [
     {
       title: "GitHub",
-      url: "https://github.com/jac00000b/network-util",
+      url: "https://github.com/jac00000b/network-utility",
       icon: Github,
     },
   ],
@@ -48,7 +48,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <ChevronsLeftRightEllipsis className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Network Util</span>
+                  <span className="truncate font-semibold">
+                    Network Utility
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
