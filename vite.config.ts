@@ -15,14 +15,25 @@ export default defineConfig({
       minify: true,
       entry: "src/main.tsx",
       inject: {
-        tags: dohServers.map((server) => ({
-          injectTo: "head",
-          tag: "link",
-          attrs: {
-            rel: "preconnect",
-            href: new URL(server.url).origin,
+        tags: [
+          {
+            injectTo: "head",
+            tag: "link",
+            attrs: {
+              rel: "preconnect",
+              href: "https://loc.jacob.com.hk",
+            },
           },
-        })),
+          //@ts-expect-error
+          ...dohServers.map((server) => ({
+            injectTo: "head",
+            tag: "link",
+            attrs: {
+              rel: "preconnect",
+              href: new URL(server.url).origin,
+            },
+          })),
+        ],
       },
     }),
   ],

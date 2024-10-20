@@ -1,5 +1,10 @@
 import * as React from "react";
-import { ChevronsLeftRightEllipsis, EthernetPort, Github } from "lucide-react";
+import {
+  ChevronsLeftRightEllipsis,
+  EthernetPort,
+  Github,
+  Globe,
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
@@ -25,6 +30,11 @@ const data = {
         title: type.toUpperCase(),
         url: `/dns/${type}`,
       })),
+    },
+    {
+      title: "IP Info",
+      url: "/ip-info",
+      icon: Globe,
     },
   ],
   navSecondary: [
