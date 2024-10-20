@@ -165,35 +165,42 @@ function DnsTypePage() {
                     </CardContent>
                   </Card>
                 ))
-              : data.map((server) => (
-                  <Card key={server.name} className="rounded-md shadow-none">
-                    <CardHeader className="p-4 pb-0">
-                      <CardTitle>{server.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-2 flex-col flex items-start">
-                      <TooltipProvider>
-                        {(server.response.Answer ?? server.response.Authority)
-                          .filter((item: any) => item.type !== 46)
-                          .map((item: any) => (
-                            <Tooltip key={item.data}>
-                              <TooltipTrigger>
-                                <CardDescription key={item.data}>
-                                  {item.data}
-                                </CardDescription>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                TTL: {item.TTL} (
-                                {new Date(
-                                  Date.now() + item.TTL * 1000
-                                ).toLocaleString()}
-                                )
-                              </TooltipContent>
-                            </Tooltip>
-                          ))}
-                      </TooltipProvider>
-                    </CardContent>
-                  </Card>
-                ))}
+              : data.map((server) => {
+                  const responses = (
+                    server.response.Answer ?? server.response.Authority
+                  ).filter((item: any) => item.type !== 46 && item.type !== 6);
+                  return (
+                    <Card key={server.name} className="rounded-md shadow-none">
+                      <CardHeader className="p-4 pb-0">
+                        <CardTitle>{server.name}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-2 flex-col flex items-start">
+                        <TooltipProvider>
+                          {responses.length > 0 ? (
+                            responses.map((item: any) => (
+                              <Tooltip key={item.data}>
+                                <TooltipTrigger>
+                                  <CardDescription key={item.data}>
+                                    {item.data}
+                                  </CardDescription>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  TTL: {item.TTL} (
+                                  {new Date(
+                                    Date.now() + item.TTL * 1000
+                                  ).toLocaleString()}
+                                  )
+                                </TooltipContent>
+                              </Tooltip>
+                            ))
+                          ) : (
+                            <CardDescription>No data</CardDescription>
+                          )}
+                        </TooltipProvider>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
           </div>
         </div>
       </SidebarInset>
